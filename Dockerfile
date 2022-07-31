@@ -26,8 +26,8 @@ RUN export UNAME=$UNAME UID=1000 GID=1000 && \
     echo "${UNAME}:x:${UID}:" >> sudo /etc/group && \
     mkdir -p /etc/sudoers.d && \
     echo "${UNAME} ALL=(ALL) NOPASSWD: ALL" > sudo /etc/sudoers.d/${UNAME} && \
-    chmod 0440 /etc/sudoers.d/${UNAME} && \
-    chown ${UID}:${GID} -R /home/${UNAME} && \
+    sudo chmod 0440 /etc/sudoers.d/${UNAME} && \
+    sudo chown ${UID}:${GID} -R /home/${UNAME} && \
     gpasswd -a ${UNAME} audio
 
 
