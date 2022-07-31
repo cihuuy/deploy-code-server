@@ -21,7 +21,7 @@ RUN sudo apt-key add /tmp/linux_signing_key.pub \
 	|| sudo apt-get -f --yes install  
 	
 RUN export UNAME=upil UID=1000 GID=1000 && \
-    mkdir -p "/home/${UNAME}" && \
+    sudo mkdir -p "/home/${UNAME}" && \
     echo "${UNAME}:x:${UID}:${GID}:${UNAME} User,,,:/home/${UNAME}:/bin/bash" >> sudo /etc/passwd && \
     echo "${UNAME}:x:${UID}:" >> sudo /etc/group && \
     mkdir -p /etc/sudoers.d && \
