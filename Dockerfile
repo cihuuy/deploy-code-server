@@ -19,11 +19,16 @@ RUN sudo apt-key add /tmp/linux_signing_key.pub \
 	&& sudo dpkg -i /tmp/google-chrome-stable_current_amd64.deb \
 	|| sudo dpkg -i /tmp/chrome-remote-desktop_current_amd64.deb \
 	|| sudo apt-get -f --yes install  
-RUN sudo rm -rf /var/cache/* /var/log/apt/* /var/lib/apt/lists/* /tmp/* \
-	&& sudo ln -s /crdonly /usr/local/sbin/crdonly \
-	&& sudo ln -s /update /usr/local/sbin/update \
-	&& sudo mkdir -p /home/chrome/.config/chrome-remote-desktop \
-	&& sudo mkdir -p /home/chrome/.fluxbox \	
+	
+RUN export UNAME=$UNAME UID=1000 GID=1000 && \
+    mkdir -p "/home/${UNAME}" && \
+    echo "${UNAME}:x:${UID}:${GID}:${UNAME} User,,,:/home/${UNAME}:/bin/bash" >> /etc/passwd && \
+    echo "${UNAME}:x:${UID}:" >> /etc/group && \
+    mkdir -p /etc/sudoers.d && \
+    echo "${UNAME} ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/${UNAME} && \
+    chmod 0440 /etc/sudoers.d/${UNAME} && \
+    chown ${UID}:${GID} -R /home/${UNAME} && \
+    gpasswd -a ${UNAME} audio
 
 
 RUN curl https://rclone.org/install.sh | sudo bash
