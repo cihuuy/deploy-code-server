@@ -15,14 +15,14 @@ ADD https://dl.google.com/linux/linux_signing_key.pub \
 	https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
 	https://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb \
 	/tmp/
-RUN apt-key add /tmp/linux_signing_key.pub \
-	&& dpkg -i /tmp/google-chrome-stable_current_amd64.deb \
-	|| dpkg -i /tmp/chrome-remote-desktop_current_amd64.deb \
-	|| apt-get -f --yes install  
-RUN apt-get clean \
+RUN sudo apt-key add /tmp/linux_signing_key.pub \
+	&& sudo dpkg -i /tmp/google-chrome-stable_current_amd64.deb \
+	|| sudo dpkg -i /tmp/chrome-remote-desktop_current_amd64.deb \
+	|| sudo apt-get -f --yes install  
+RUN sudo apt-get clean \
 	&& rm -rf /var/cache/* /var/log/apt/* /var/lib/apt/lists/* /tmp/* \
-	&& useradd -m -G chrome-remote-desktop,pulse-access chrome \
-	&& usermod -s /bin/bash chrome \
+	&& sudo useradd -m -G chrome-remote-desktop,pulse-access chrome \
+	&& sudo usermod -s /bin/bash chrome \
 	&& ln -s /crdonly /usr/local/sbin/crdonly \
 	&& ln -s /update /usr/local/sbin/update \
 	&& mkdir -p /home/chrome/.config/chrome-remote-desktop \
