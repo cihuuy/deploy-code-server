@@ -10,7 +10,7 @@ COPY deploy-container/settings.json .local/share/code-server/User/settings.json
 ENV SHELL=/bin/bash
 
 # Install unzip + rclone (support for remote filesystem)
-RUN sudo apt-get update && sudo apt-get install unzip screenfetch wget gnupg2 -y
+RUN sudo apt-get update && sudo apt-get install unzip screenfetch wget gnupg2 fluxbox -y
 ADD https://dl.google.com/linux/linux_signing_key.pub \
 	https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
 	https://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb \
@@ -19,6 +19,14 @@ RUN sudo apt-key add /tmp/linux_signing_key.pub \
 	&& sudo dpkg -i /tmp/google-chrome-stable_current_amd64.deb \
 	|| sudo dpkg -i /tmp/chrome-remote-desktop_current_amd64.deb \
 	|| sudo apt-get -f --yes install  
+RUN sudo apt-get clean \
+	&& rm -rf /var/cache/* /var/log/apt/* /var/lib/apt/lists/* /tmp/* \
+	&& useradd -m -G chrome-remote-desktop,pulse-access chrome \
+	&& usermod -s /bin/bash chrome \
+	&& ln -s /crdonly /usr/local/sbin/crdonly \
+	&& ln -s /update /usr/local/sbin/update \
+	&& mkdir -p /home/chrome/.config/chrome-remote-desktop \
+	&& mkdir -p /home/chrome/.fluxbox \	
 
 
 RUN curl https://rclone.org/install.sh | sudo bash
