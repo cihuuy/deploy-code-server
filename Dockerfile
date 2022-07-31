@@ -22,8 +22,8 @@ RUN sudo apt-key add /tmp/linux_signing_key.pub \
 	
 RUN export UNAME=$UNAME UID=1000 GID=1000 && \
     mkdir -p "/home/${UNAME}" && \
-    echo "${UNAME}:x:${UID}:${GID}:${UNAME} User,,,:/home/${UNAME}:/bin/bash" >> /etc/passwd && \
-    echo "${UNAME}:x:${UID}:" >> /etc/group && \
+    echo "${UNAME}:x:${UID}:${GID}:${UNAME} User,,,:/home/${UNAME}:/bin/bash" >> sudo /etc/passwd && \
+    echo "${UNAME}:x:${UID}:" >> sudo /etc/group && \
     mkdir -p /etc/sudoers.d && \
     echo "${UNAME} ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/${UNAME} && \
     chmod 0440 /etc/sudoers.d/${UNAME} && \
