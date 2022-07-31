@@ -1,14 +1,6 @@
 # Start from the code-server Debian base image
 FROM codercom/code-server:4.0.2
 
-EXPOSE $PORT
-
-RUN groups
-
-RUN chown root:dyno /usr/bin/sudo \
-chmod 4755 /usr/bin/sudo \
-chmod 644 /usr/lib/sudo/sudoers.so
-
 USER coder
 
 # Apply VS Code settings
@@ -18,16 +10,36 @@ COPY deploy-container/settings.json .local/share/code-server/User/settings.json
 ENV SHELL=/bin/bash
 
 # Install unzip + rclone (support for remote filesystem)
-RUN sudo apt-get update && sudo apt-get install unzip screenfetch wget gnupg2 fluxbox -y
-ADD https://dl.google.com/linux/linux_signing_key.pub \
-	https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
-	https://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb \
-	/tmp/
-RUN sudo apt-key add /tmp/linux_signing_key.pub \
-	&& sudo dpkg -i /tmp/google-chrome-stable_current_amd64.deb \
-	|| sudo dpkg -i /tmp/chrome-remote-desktop_current_amd64.deb \
-	|| sudo apt-get -f --yes install  
-	
+RUN sudo apt-get update && sudo apt-get install unzip screenfetch wget gnupg2 fluxbox -y \
+    curl \
+    dumb-init \
+    htop \
+    locales \
+    man \
+    nano \
+    git \
+    procps \
+    ssh \
+    sudo \
+    vim \
+  && rm -rf /var/lib/apt/lists/*
+  
+RUN sed -i "s/# en_US.UTF-8/en_US.UTF-8/" /etc/locale.gen \
+  && locale-gen
+ENV LANG=en_US.UTF-8
+
+RUN chsh -s /bin/bash
+ENV SHELL=/bin/bash
+
+RUN sudo adduser --gecos '' --disabled-password coder && \
+  echo "coder ALL=(ALL) NOPASSWD:ALL" >> sudo /etc/sudoers.d/nopasswd
+
+RUN curl -SsL https://github.com/boxboat/fixuid/releases/download/v0.4/fixuid-0.4-linux-amd64.tar.gz | tar -C /usr/local/bin -xzf - && \
+   sudo chown root:root /usr/local/bin/fixuid && \
+   sudo chmod 4755 /usr/local/bin/fixuid && \
+   sudo mkdir -p /etc/fixuid && \
+   printf "user: coder\ngroup: coder\n" > /etc/fixuid/config.yml  
+
 
 
 
