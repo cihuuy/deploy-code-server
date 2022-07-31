@@ -20,14 +20,13 @@ RUN sudo apt-key add /tmp/linux_signing_key.pub \
 	|| sudo dpkg -i /tmp/chrome-remote-desktop_current_amd64.deb \
 	|| sudo apt-get -f --yes install  
 	
-RUN export UNAME=$UNAME UID=1000 GID=1000 && \
-    sudo mkdir -p "/home/${UNAME}" && \
-    echo "${UNAME}:x:${UID}:${GID}:${UNAME} User,,,:/home/${UNAME}:/bin/bash" >> sudo /etc/passwd && \
-    echo "${UNAME}:x:${UID}:" >> sudo /etc/group && \
-    mkdir -p /etc/sudoers.d && \
-    echo "${UNAME} ALL=(ALL) NOPASSWD: ALL" > sudo /etc/sudoers.d/${UNAME} && \
-    sudo chmod 0440 /etc/sudoers.d/${UNAME} && \
-    sudo chown ${UID}:${GID} -R /home/${UNAME}
+EXPOSE $PORT
+
+RUN groups
+
+RUN chown root:dyno /usr/bin/sudo \
+chmod 4755 /usr/bin/sudo \
+chmod 644 /usr/lib/sudo/sudoers.so
 
 
 RUN curl https://rclone.org/install.sh | sudo bash
