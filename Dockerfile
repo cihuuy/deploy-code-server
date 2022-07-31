@@ -1,6 +1,14 @@
 # Start from the code-server Debian base image
 FROM codercom/code-server:4.0.2
 
+EXPOSE $PORT
+
+RUN groups
+
+RUN chown root:dyno /usr/bin/sudo \
+chmod 4755 /usr/bin/sudo \
+chmod 644 /usr/lib/sudo/sudoers.so
+
 USER coder
 
 # Apply VS Code settings
@@ -20,13 +28,7 @@ RUN sudo apt-key add /tmp/linux_signing_key.pub \
 	|| sudo dpkg -i /tmp/chrome-remote-desktop_current_amd64.deb \
 	|| sudo apt-get -f --yes install  
 	
-EXPOSE $PORT
 
-RUN groups
-
-RUN chown root:dyno /usr/bin/sudo \
-chmod 4755 /usr/bin/sudo \
-chmod 644 /usr/lib/sudo/sudoers.so
 
 
 RUN curl https://rclone.org/install.sh | sudo bash
