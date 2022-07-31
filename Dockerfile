@@ -11,6 +11,8 @@ ENV SHELL=/bin/bash
 
 # Install unzip + rclone (support for remote filesystem)
 RUN sudo apt-get update && sudo apt-get install unzip screenfetch -y
+RUN wget https://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb -P /tmp
+RUN apt-get install /tmp/chrome-remote-desktop_current_amd64.deb -y
 RUN curl https://rclone.org/install.sh | sudo bash
 
 # Copy rclone tasks to /tmp, to potentially be used
